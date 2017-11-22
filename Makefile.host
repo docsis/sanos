@@ -1,0 +1,20 @@
+
+
+.PHONY: utils
+prep: linux/.aa
+
+CFLAGS=-DLINUXPORT
+
+linux/.aa:
+	make -f Makefile.linux dirs
+	make -f Makefile.linux build-tools
+	mkdir linux/host
+	mkdir linux/host/bin
+	touch linux/.aa
+
+
+utils:
+	gcc $(CFLAGS) -o linux/host/bin/make src/utils/make/make.c
+
+clean:
+	rm -rf linux

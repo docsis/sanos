@@ -89,12 +89,14 @@ struct project {
   struct buffer value;
 };
 
+#if !defined(LINUXPORT)
 char *strndup(char *str, int size) {
   char *buffer = (char *) malloc(size + 1);
   memcpy(buffer, str, size);
   buffer[size] = 0;
   return buffer;
 }
+#endif
 
 void buffer_init(struct buffer *b) {
   b->start = b->end = b->limit = NULL;

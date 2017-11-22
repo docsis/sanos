@@ -13,4 +13,4 @@ install: make.exe
 cross: install
 
 clean:
-    rm make.exe
+	rm make.exe

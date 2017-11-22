@@ -14,4 +14,4 @@ linux/**/*
 *.lib
 krnl.def
 os.def
-
+*.swp
