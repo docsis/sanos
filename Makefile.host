@@ -3,7 +3,7 @@
 .PHONY: utils
 prep: linux/.aa
 
-CFLAGS=-DLINUXPORT
+CFLAGS=-DLINUXPORT -I src/inc
 
 linux/.aa:
 	make -f Makefile.linux dirs
@@ -12,9 +12,32 @@ linux/.aa:
 	mkdir linux/host/bin
 	touch linux/.aa
 
+SH_SRCS=src/utils/sh/sh.c src/utils/sh/node.c src/utils/sh/job.c src/utils/sh/interp.c src/utils/sh/parser.c src/utils/sh/stmalloc.c src/utils/sh/input.c src/utils/sh/chartype.c src/utils/sh/cmds.c src/utils/sh/builtins.c
+
+SH_HDRS=src/utils/sh/sh.h src/utils/sh/node.h src/utils/sh/job.h src/utils/sh/interp.h src/utils/sh/parser.h src/utils/sh/stmalloc.h src/utils/sh/input.h src/utils/sh/chartype.h
+
+SH_CMDS= \
+  src/cmds/chgrp.c \
+  src/cmds/chmod.c \
+  src/cmds/chown.c \
+  src/cmds/cp.c \
+  src/cmds/du.c \
+  src/cmds/ls.c \
+  src/cmds/mkdir.c \
+  src/cmds/mv.c \
+  src/cmds/rm.c \
+  src/cmds/test.c \
+  src/cmds/touch.c \
+  src/cmds/wc.c
+
+linux/host/bin/sh: $(SH_SRCS) $(SH_HDRS) $(SH_CMDS)
+	gcc -o $@ $(SH_SRCS) $(SH_CMDS) $(CFLAGS) -D SHELL
+	cp -p build/sh.inf $(PKGDIR)
 
 utils:
 	gcc $(CFLAGS) -o linux/host/bin/make src/utils/make/make.c
+	gcc $(CFLAGS) -o linux/host/bin/chgrp src/cmds/chgrp.c src/lib/shlib.c 
+
 
 clean:
 	rm -rf linux

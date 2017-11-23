@@ -630,6 +630,34 @@ void usage() {
   fprintf(stderr, "  -s            Do not print commands as they are executed.\n");
 }
 
+#if defined(LINUXPORT)
+void printrule(struct project *prj)
+{
+  struct rule *r;
+  struct item *item;
+  struct item *cmds;
+
+  r = prj->rules_head;
+
+  while (r) {
+	  printf(">> rule: %s \n", r->target);
+	  item = r->dependencies.head;
+	  while (item) {
+		printf(" item: %s \n", item->value);
+		item = item->next;
+	  }
+	  printf("\n");
+	  cmds = r->commands.head;
+	  while (cmds) {
+		printf(" cmds: %s \n", cmds->value);
+		cmds = cmds->next;
+	  }
+	  printf("\n");
+	  r = r->next;
+  }
+}
+#endif
+
 int main(int argc, char *argv[]) {
   int c;
   int i;
@@ -720,6 +748,11 @@ int main(int argc, char *argv[]) {
   if (!prj.targets.head && prj.rules_head) {
     list_append(&prj.targets, strdup(prj.rules_head->target));
   }
+
+#if defined(LINUXPORT)
+  if (prj.debug)
+	  printrule(&prj);
+#endif
 
   // Add and expand build targets
   rc = check_targets(&prj);

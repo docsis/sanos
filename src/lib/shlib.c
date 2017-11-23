@@ -66,7 +66,9 @@ char *get_symbolic_mode(int mode, char *buf) {
     case S_IFDIR: buf[0] = 'd'; break;
     case S_IFBLK: buf[0] = 'b'; break;
     case S_IFCHR: buf[0] = 'c'; break;
+#if !defined(LINUXPORT)
     case S_IFPKT: buf[0] = 'p'; break;
+#endif
   }
 
   if (mode & 0400) buf[1] = 'r';
