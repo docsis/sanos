@@ -103,7 +103,11 @@ static int copy_file(char *src, char *dest, struct options *opts) {
   }
 
   // Open source file
+#if defined(LINUXPORT)
+  fin = open(src, O_RDONLY);
+#else
   fin = open(src, O_RDONLY | O_BINARY);
+#endif
   if (fin < 0  || fstat(fin, &st) < 0) {
     perror(src);
     return 1;
@@ -124,7 +128,11 @@ static int copy_file(char *src, char *dest, struct options *opts) {
   // Copy source file to destination
   if (opts->verbose) printf("%s -> %s\n", src, dest);
   if (opts->force) unlink(dest);
+#if defined(LINUXPORT)
+  fout = open(dest, O_WRONLY | O_CREAT | (opts->noclobber ? O_EXCL : O_TRUNC) , 0666);
+#else
   fout = open(dest, O_WRONLY | O_CREAT | (opts->noclobber ? O_EXCL : O_TRUNC) | O_BINARY, 0666);
+#endif
   buffer = malloc(BLKSIZE);
   if (fout < 0 || !buffer) {
     perror(dest);
@@ -144,11 +152,13 @@ static int copy_file(char *src, char *dest, struct options *opts) {
   fchmod(fout, st.st_mode);
 
   if (opts->preserve) {
+#if !defined(LINUXPORT)
     struct utimbuf times;
     times.modtime = st.st_mtime;
     times.actime = st.st_atime;
     times.ctime = -1;
     futime(fout, &times);
+#endif
     fchown(fout, st.st_uid, st.st_gid);
   }
 

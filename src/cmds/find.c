@@ -45,7 +45,7 @@
 #include <fnmatch.h>
 #include <stdio.h>
 #include <shlib.h>
-#include <os.h>
+//#include <os.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
@@ -399,11 +399,13 @@ static struct node *simple(int t) {
     case OP_ATIME:
     case OP_CTIME:
     case OP_MTIME:
+#if !defined(LINUXPORT)
       checkarg(*++ipp);
       number(*ipp, 10, &i, &p->num.sign);
       p->num.val = current_time - i * SECS_PER_DAY;
       // More than n days old means less than the absolute time
       p->num.sign *= -1;
+#endif
       break;
 
     case OP_EXEC:
@@ -521,6 +523,7 @@ static int execute(int op, struct exec *e, char *path) {
 
   // Optionally confirm before execute
   if (op == OP_OK) {
+#if !defined(LINUXPORT)
     struct term *term = gettib()->proc->term;
     char answer;
     for (p = &argv[1]; *p; p++) {
@@ -532,10 +535,15 @@ static int execute(int op, struct exec *e, char *path) {
     write(term->ttyout, &answer, 1);
     write(term->ttyout, "\n", 1);
     if (answer != 'y') return 0;
+#endif
   }
 
+#if !defined(LINUXPORT)
   // Execute command
   return spawnv(0, NULL, argv);
+#else
+  return 0;
+#endif
 }
 
 static int ichk(int val, struct node *n) {
@@ -709,7 +717,9 @@ shellcmd(find) {
 
   // Get umask and time
   umask(umask_val = umask(0));
+#if !defined(LINUXPORT)
   time(&current_time);
+#endif
 
   // Find paths
   pathlist = argv;

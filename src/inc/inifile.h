@@ -1,9 +1,9 @@
 //
-// shlib.h
+// inifile.h
 //
-// Shell command library
+// Property files
 //
-// Copyright (C) 2012 Michael Ringgaard. All rights reserved.
+// Copyright (C) 2002 Michael Ringgaard. All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions
@@ -31,38 +31,36 @@
 // SUCH DAMAGE.
 // 
 
-#if _MSC_VER > 1000
-#pragma once
-#endif
+#ifndef INIFILE_H
+#define INIFILE_H
 
-#ifndef SHLIB_H
-#define SHLIB_H
+struct property;
 
-#include <stdio.h>
+struct section {
+  char *name;
+  struct section *next;
+  struct property *properties;
+};
 
-typedef int (*main_t)(int argc, char *argv[]);
-
-#ifdef SHELL
-#if !defined(LINUXPORT)
-#define shellcmd(name) _declspec(dllexport) int cmd_##name(int argc, char *argv[])
-#else
-#define shellcmd(name) int cmd_##name(int argc, char *argv[])
-#endif
-#else
-#define shellcmd(name) int main(int argc, char *argv[])
-#endif
+struct property {
+  char *name;
+  char *value;
+  struct property *next;
+};
 
 #ifdef  __cplusplus
 extern "C" {
 #endif
 
-char *join_path(char *dir, char *name);
-
-char *get_symbolic_mode(int mode, char buf[11]);
-int parse_symbolic_mode(char *symbolic, int orig);
-
-int parse_url(char *url, char **host, int *port, char **path);
-FILE *open_url(char *url, char *agent);
+struct section *find_section(struct section *sect, char *name);
+int get_section_size(struct section *sect);
+char *find_property(struct section *sect, char *name);
+char *get_property(struct section *sections, char *sectname, char *propname, char *defval);
+int get_numeric_property(struct section *sections, char *sectname, char *propname, int defval);
+void free_properties(struct section *sect);
+struct section *parse_properties(char *props);
+void list_properties(int f, struct section *sect);
+struct section *read_properties(char *filename);
 
 #ifdef  __cplusplus
 }

@@ -36,7 +36,19 @@ linux/host/bin/sh: $(SH_SRCS) $(SH_HDRS) $(SH_CMDS)
 
 utils:
 	gcc $(CFLAGS) -o linux/host/bin/make src/utils/make/make.c
-	gcc $(CFLAGS) -o linux/host/bin/chgrp src/cmds/chgrp.c src/lib/shlib.c 
+	gcc $(CFLAGS) -o linux/host/bin/chgrp src/cmds/chgrp.c src/lib/shlib.c
+	gcc $(CFLAGS) -o linux/host/bin/chmod src/cmds/chmod.c src/lib/shlib.c
+	gcc $(CFLAGS) -o linux/host/bin/cp src/cmds/cp.c src/lib/shlib.c
+	gcc $(CFLAGS) -o linux/host/bin/du src/cmds/du.c src/lib/shlib.c
+	gcc $(CFLAGS) -o linux/host/bin/find src/cmds/find.c src/lib/shlib.c
+	gcc $(CFLAGS) -o linux/host/bin/grep src/cmds/grep.c src/lib/shlib.c
+	gcc $(CFLAGS) -o linux/host/bin/ls src/cmds/ls.c src/lib/shlib.c
+	gcc $(CFLAGS) -o linux/host/bin/mkdir src/cmds/mkdir.c src/lib/shlib.c
+	gcc $(CFLAGS) -o linux/host/bin/mv src/cmds/mv.c src/lib/shlib.c
+	gcc $(CFLAGS) -o linux/host/bin/rm src/cmds/rm.c src/lib/shlib.c
+	gcc $(CFLAGS) -o linux/host/bin/test src/cmds/test.c src/lib/shlib.c
+	gcc $(CFLAGS) -o linux/host/bin/touch src/cmds/touch.c src/lib/shlib.c
+	gcc $(CFLAGS) -o linux/host/bin/wc src/cmds/wc.c src/lib/shlib.c
 
 
 clean:

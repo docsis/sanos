@@ -43,7 +43,11 @@
 typedef int (*main_t)(int argc, char *argv[]);
 
 #ifdef SHELL
+#if !defined(LINUXPORT)
 #define shellcmd(name) __declspec(dllexport) int cmd_##name(int argc, char *argv[])
+#else
+#define shellcmd(name) int cmd_##name(int argc, char *argv[])
+#endif
 #else
 #define shellcmd(name) int main(int argc, char *argv[])
 #endif

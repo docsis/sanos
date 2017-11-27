@@ -35,12 +35,13 @@
 #define SH_H
 
 #include <os.h>
-#include <crtbase.h>
+#include <errno.h>
+//#include <crtbase.h>
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <io.h>
+//#include <io.h>
 #include <inifile.h>
 #include <glob.h>
 #include <fnmatch.h>
@@ -60,8 +61,11 @@
 
 typedef int (*builtin_t)(struct job *job);
 
+#if !defined(LINUXPORT)
 #define builtin(name) __declspec(dllexport) int builtin_##name(struct job *job)
-
+#else
+#define builtin(name) int builtin_##name(struct job *job)
+#endif
 //
 // Function definition
 //

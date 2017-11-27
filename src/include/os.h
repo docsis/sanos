@@ -38,6 +38,8 @@
 #ifndef OS_H
 #define OS_H
 
+#if !defined(LINUXPORT)
+
 #ifndef VERSION_H
 #include <os/version.h>
 #endif VERSION_H
@@ -1691,6 +1693,10 @@ osapi char ***_environ();
 #ifdef  __cplusplus
 }
 #endif
+
+#endif
+
+#else
 
 #endif
 

@@ -218,7 +218,11 @@ shellcmd(grep) {
   pattern = argv[optind++];
 
   // Convert patttern to regex
+#if !defined(LINUXPORT)
   reflags = opts.extended ? REG_EXTENDED : REG_BASIC;
+#else
+  reflags = opts.extended ? REG_EXTENDED : 0;
+#endif
   if (opts.nocase) reflags |= REG_ICASE;
   rc = regcomp(&opts.re, pattern, reflags);
   if (rc != 0) {
